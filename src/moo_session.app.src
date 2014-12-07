@@ -1,0 +1,21 @@
+{application, moo_session, [
+	{description, "Session management for cowboy"},
+	{vsn, "0.0.1"},
+	{registered, []},
+	{applications, [
+		kernel,
+		stdlib,
+		cowboy,
+		jwt
+	]},
+	{env, [
+		{session_length, 604800},
+		{refresh_threshold, 302400},
+		{cookie_opts, [
+			{path, <<"/">>},
+			{http_only, true}
+		]},
+		{signing_algorithm, none},
+		{supported_algorithms, [none]}
+	]}
+]}.
