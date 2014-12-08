@@ -15,9 +15,8 @@ get(Req) ->
 		{undefined, Req3} -> {undefined, Req3};
 		{Cookie, Req3} ->
 			case jwt:parse_token(Cookie, proplists:get_value(supported_algorithms, SessionOpts, [])) of
-				{ok, ClaimSet} ->
+				{ok, #{<<"exp">> := Exp} = ClaimSet} ->
 					% Validate exp and refresh
-					Exp = proplists:get_value(<<"exp">>, ClaimSet, 0),
 					{MegaSecs, Secs, _} = os:timestamp(),
 					Now = MegaSecs * 1000000 + Secs,
 					RefreshThreshold = proplists:get_value(refresh_threshold, SessionOpts, 0),
@@ -34,7 +33,7 @@ get(Req) ->
 						true ->
 							{ClaimSet, Req3}
 					end;
-				{error, _} ->
+				_ ->
 					{ok, Req3}
 			end
 	end.
