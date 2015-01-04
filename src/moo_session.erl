@@ -51,7 +51,10 @@ set(ClaimSet, Req) ->
 	cowboy_req:set_resp_cookie(<<"sid">>, NewToken, [{max_age, SessionLength} | CookieOpts], Req2).
 
 -spec delete(cowboy_req:req()) -> cowboy_req:req().
-delete(Req) -> cowboy_req:set_resp_cookie(<<"sid">>, <<"">>, [{max_age, 0}], Req).
+delete(Req) ->
+	{SessionOpts, Req2} = cowboy_req:meta(moo_opts, Req, []),
+	CookieOpts = proplists:get_value(cookie_opts, SessionOpts, []),
+	cowboy_req:set_resp_cookie(<<"sid">>, <<"_">>, [{max_age, 0} | CookieOpts], Req2).
 
 replace_exp(ClaimSet, Exp) when is_map(ClaimSet) -> ClaimSet#{<<"exp">> => Exp};
 replace_exp(ClaimSet, Exp) when is_list(ClaimSet) -> lists:keystore(<<"exp">>, 1, ClaimSet, {<<"exp">>, Exp}).
