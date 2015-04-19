@@ -4,7 +4,7 @@
 -export([get/1, set/2, delete/1]).
 
 execute(Req, Env) ->
-	SessionOpts = proplists:get_value(moo, Env, application:get_all_env(moo_session)),
+	SessionOpts = proplists:get_value(moo_session, Env, application:get_all_env(moo_session)),
 	Req2 = cowboy_req:set_meta(moo_opts, SessionOpts, Req),
 	{ok, Req2, Env}.
 
